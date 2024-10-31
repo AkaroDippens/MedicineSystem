@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Recipe Details</h2>
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Recipe ID: <span th:text="${recipe.id}"></span></h3>
+        <p><strong>Doctor:</strong> <span th:text="${recipe.idDoctor.fullName}"></span></p>
+        <a th:href="@{/recipes}" class="mt-4 inline-block bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Back to Recipes</a>
+    </div>
+</div>
+</body>
+</html>

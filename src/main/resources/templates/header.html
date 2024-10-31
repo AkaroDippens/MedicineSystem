@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Header</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+<header class="bg-indigo-600 text-white p-4">
+    <nav class="container mx-auto flex justify-between items-center">
+        <div class="text-xl font-bold">Medicine System</div>
+        <ul class="flex space-x-4">
+            <li><a th:href="@{/users}" class="hover:underline">Users</a></li>
+            <li><a th:href="@{/buildings}" class="hover:underline">Buildings</a></li>
+            <li><a th:href="@{/roles}" class="hover:underline">Roles</a></li>
+            <li><a th:href="@{/specializations}" class="hover:underline">Specializations</a></li>
+            <li><a th:href="@{/doctors}" class="hover:underline">Doctors</a></li>
+            <li><a th:href="@{/recipes}" class="hover:underline">Recipes</a></li>
+            <li><a th:href="@{/records}" class="hover:underline">Records</a></li>
+            <li><a th:href="@{/medicines}" class="hover:underline">Medicines</a></li>
+            <li><a th:href="@{/appointments}" class="hover:underline">Appointments</a></li>
+            <li><a th:href="@{/analyzes}" class="hover:underline">Analyzes</a></li>
+            <li><a th:href="@{/medicalrecords}" class="hover:underline">Medical Records</a></li>
+        </ul>
+    </nav>
+</header>
+</body>
+</html>

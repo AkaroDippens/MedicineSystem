@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Medicines</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Medicines</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Medicine Name</th>
+                <th class="border border-gray-300 p-2">Manufacturer</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="medicine : ${medicines}" class="hover:bg-gray-200" th:data-id="${medicine.id}">
+                <td class="border border-gray-300 p-2" th:text="${medicine.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${medicine.medicineName}"></td>
+                <td class="border border-gray-300 p-2" th:text="${medicine.manufacturer}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/medicines/{id}(id=${medicine.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/medicines/{id}(id=${medicine.id})}" method="post" th:object="${medicine}" class="inline">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editMedicine(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit Medicine</h2>
+        <form th:action="@{/medicines/update}" method="post" th:object="${editMedicine}" class="space-y-4">
+            <input type="hidden" id="editMedicineId" th:field="*{id}"/>
+            <div>
+                <label for="editMedicineName" class="block text-sm font-medium text-gray-700">Medicine Name:</label>
+                <input type="text" id="editMedicineName" th:field="*{medicineName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editManufacturer" class="block text-sm font-medium text-gray-700">Manufacturer:</label>
+                <input type="text" id="editManufacturer" th:field="*{manufacturer}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Medicine</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New Medicine</h2>
+        <form th:action="@{/medicines/add}" method="post" th:object="${newMedicine}" class="space-y-4">
+            <div>
+                <label for="medicineName" class="block text-sm font-medium text-gray-700">Medicine Name:</label>
+                <input type="text" id="medicineName" th:field="*{medicineName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="manufacturer" class="block text-sm font-medium text-gray-700">Manufacturer:</label>
+                <input type="text" id="manufacturer" th:field="*{manufacturer}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Medicine</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editMedicine(button) {
+        const row = button.closest('tr');
+        const medicineId = row.getAttribute('data-id');
+        const medicineName = row.children[1].innerText;
+        const manufacturer = row.children[2].innerText;
+
+        document.getElementById('editMedicineId').value = medicineId;
+        document.getElementById('editMedicineName').value = medicineName;
+        document.getElementById('editManufacturer').value = manufacturer;
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

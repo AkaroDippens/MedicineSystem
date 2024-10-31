@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Specializations</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Specializations</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Specialization Name</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="specialization : ${specializations}" class="hover:bg-gray-200" th:data-id="${specialization.id}">
+                <td class="border border-gray-300 p-2" th:text="${specialization.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${specialization.specializationName}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/specializations/{id}(id=${specialization.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/specializations/{id}(id=${specialization.id})}" method="post" th:object="${specialization}" class="inline">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editSpecialization(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit Specialization</h2>
+        <form th:action="@{/specializations/update}" method="post" th:object="${editSpecialization}" class="space-y-4">
+            <input type="hidden" id="editSpecializationId" th:field="*{id}"/>
+            <div>
+                <label for="editSpecializationName" class="block text-sm font-medium text-gray-700">Specialization Name:</label>
+                <input type="text" id="editSpecializationName" th:field="*{specializationName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Specialization</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New Specialization</h2>
+        <form th:action="@{/specializations/add}" method="post" th:object="${newSpecialization}" class="space-y-4">
+            <div>
+                <label for="specializationName" class="block text-sm font-medium text-gray-700">Specialization Name:</label>
+                <input type="text" id="specializationName" th:field="*{specializationName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Specialization</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editSpecialization(button) {
+        const row = button.closest('tr');
+        const specializationId = row.getAttribute('data-id');
+        const specializationName = row.children[1].innerText;
+
+        document.getElementById('editSpecializationId').value = specializationId;
+        document.getElementById('editSpecializationName').value = specializationName;
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

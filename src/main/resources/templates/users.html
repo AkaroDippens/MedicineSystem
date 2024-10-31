@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Users</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Full Name</th>
+                <th class="border border-gray-300 p-2">MHI Policy</th>
+                <th class="border border-gray-300 p-2">Role</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="user : ${users}" class="hover:bg-gray-200" th:data-id="${user.id}">
+                <td class="border border-gray-300 p-2" th:text="${user.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${user.fullName}"></td>
+                <td class="border border-gray-300 p-2" th:text="${user.mhiPolicy}"></td>
+                <td class="border border-gray-300 p-2" th:text="${user.idRole.roleName}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/users/{id}(id=${user.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/users/{id}(id=${user.id})}" method="post" th:object="${user}" class="inline">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editUser(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit User</h2>
+        <form th:action="@{/users/update}" method="post" th:object="${editUser}" class="space-y-4">
+            <input type="hidden" id="editUserId" th:field="*{id}"/>
+            <div>
+                <label for="editFullName" class="block text-sm font-medium text-gray-700">Full Name:</label>
+                <input type="text" id="editFullName" th:field="*{fullName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editContactNumber" class="block text-sm font-medium text-gray-700">Contact Number:</label>
+                <input type="text" id="editContactNumber" th:field="*{contactNumber}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editMhiPolicy" class="block text-sm font-medium text-gray-700">MHI Policy:</label>
+                <input type="text" id="editMhiPolicy" th:field="*{mhiPolicy}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editPassword" class="block text-sm font-medium text-gray-700">Password:</label>
+                <input type="password" id="editPassword" th:field="*{password}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editRole" class="block text-sm font-medium text-gray-700">Role:</label>
+                <select id="editRole" th:field="*{idRole.id}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.roleName}"></option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update User</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New User</h2>
+        <form th:action="@{/users/add}" method="post" th:object="${newUser}" class="space-y-4">
+            <div>
+                <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name:</label>
+                <input type="text" id="fullName" th:field="*{fullName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="contactNumber" class="block text-sm font-medium text-gray-700">Contact Number:</label>
+                <input type="text" id="contactNumber" th:field="*{contactNumber}" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="mhiPolicy" class="block text-sm font-medium text-gray-700">MHI Policy:</label>
+                <input type="text" id="mhiPolicy" th:field="*{mhiPolicy}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password:</label>
+                <input type="password" id="password" th:field="*{password}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add User</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editUser(button) {
+        const row = button.closest('tr');
+        const userId = row.getAttribute('data-id');
+        const fullName = row.children[1].innerText;
+        const mhiPolicy = row.children[2].innerText;
+        const roleName = row.children[3].innerText;
+
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editFullName').value = fullName;
+        document.getElementById('editMhiPolicy').value = mhiPolicy;
+
+        const roleSelect = document.getElementById('editRole');
+        for (let i = 0; i < roleSelect.options.length; i++) {
+            if (roleSelect.options[i].text === roleName) {
+                roleSelect.selectedIndex = i;
+                break;
+            }
+        }
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

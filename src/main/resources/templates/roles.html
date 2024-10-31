@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Roles</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Roles</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Role Name</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="role : ${roles}" class="hover:bg-gray-200" th:data-id="${role.id}">
+                <td class="border border-gray-300 p-2" th:text="${role.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${role.roleName}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/roles/{id}(id=${role.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/roles/{id}(id=${role.id})}" method="post" th:object="${role}" class="inline">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editRole(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit Role</h2>
+        <form th:action="@{/roles/edit}" method="post" th:object="${editRole}" class="space-y-4">
+            <input type="hidden" id="editRoleId" th:field="*{id}"/>
+            <div>
+                <label for="editRoleName" class="block text-sm font-medium text-gray-700">Role Name:</label>
+                <input type="text" id="editRoleName" th:field="*{roleName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Role</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New Role</h2>
+        <form th:action="@{/roles/add}" method="post" th:object="${newRole}" class="space-y-4">
+            <div>
+                <label for="roleName" class="block text-sm font-medium text-gray-700">Role Name:</label>
+                <input type="text" id="roleName" th:field="*{roleName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Role</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editRole(button) {
+        const row = button.closest('tr');
+        const roleId = row.getAttribute('data-id');
+        const roleName = row.children[1].innerText;
+
+        document.getElementById('editRoleId').value = roleId;
+        document.getElementById('editRoleName').value = roleName;
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

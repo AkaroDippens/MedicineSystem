@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Medicine Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+<div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-3xl font-bold text-center mb-6">Medicine Details</h2>
+    <div class="space-y-4">
+        <p>ID: <span th:text="${medicine.id}"></span></p>
+        <p>Medicine Name: <span th:text="${medicine.medicineName}"></span></p>
+        <p>Manufacturer: <span th:text="${medicine.manufacturer}"></span></p>
+    </div>
+    <a href="/medicines" class="mt-6 block text-center w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Back to Medicines</a>
+</div>
+</body>
+</html>

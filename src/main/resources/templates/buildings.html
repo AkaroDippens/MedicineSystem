@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Buildings</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Buildings</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Building Name</th>
+                <th class="border border-gray-300 p-2">Address</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="building : ${buildings}" class="hover:bg-gray-200" th:data-id="${building.id}">
+                <td class="border border-gray-300 p-2" th:text="${building.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${building.buildingName}"></td>
+                <td class="border border-gray-300 p-2" th:text="${building.address}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/buildings/{id}(id=${building.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/buildings/{id}(id=${building.id})}" method="post" th:object="${building}" class="inline">
+                        <input type="hidden" name="_method" value="delete"/>
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editBuilding(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit Building</h2>
+        <form th:action="@{/buildings/update}" method="post" th:object="${editBuilding}" class="space-y-4">
+            <input type="hidden" id="editBuildingId" th:field="*{id}"/>
+            <div>
+                <label for="editBuildingName" class="block text-sm font-medium text-gray-700">Building Name:</label>
+                <input type="text" id="editBuildingName" th:field="*{buildingName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="editAddress" class="block text-sm font-medium text-gray-700">Address:</label>
+                <input type="text" id="editAddress" th:field="*{address}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Building</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New Building</h2>
+        <form th:action="@{/buildings/add}" method="post" th:object="${newBuilding}" class="space-y-4">
+            <div>
+                <label for="buildingName" class="block text-sm font-medium text-gray-700">Building Name:</label>
+                <input type="text" id="buildingName" th:field="*{buildingName}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <div>
+                <label for="address" class="block text-sm font-medium text-gray-700">Address:</label>
+                <input type="text" id="address" th:field="*{address}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500"/>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Building</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editBuilding(button) {
+        const row = button.closest('tr');
+        const buildingId = row.getAttribute('data-id');
+        const buildingName = row.children[1].innerText;
+        const address = row.children[2].innerText;
+
+        document.getElementById('editBuildingId').value = buildingId;
+        document.getElementById('editBuildingName').value = buildingName;
+        document.getElementById('editAddress').value = address;
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+<header th:replace="header :: header"></header>
+<div class="container mx-auto mt-4">
+    <h2 class="text-2xl font-bold mb-4">Recipes</h2>
+    <table class="w-full border-collapse border border-gray-300 mb-4">
+        <thead>
+            <tr class="bg-gray-200">
+                <th class="border border-gray-300 p-2">ID</th>
+                <th class="border border-gray-300 p-2">Doctor</th>
+                <th class="border border-gray-300 p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="recipe : ${recipes}" class="hover:bg-gray-200" th:data-id="${recipe.id}">
+                <td class="border border-gray-300 p-2" th:text="${recipe.id}"></td>
+                <td class="border border-gray-300 p-2" th:text="${recipe.idDoctor.fullName}"></td>
+                <td class="border border-gray-300 p-2">
+                    <a th:href="@{/recipes/{id}(id=${recipe.id})}" class="text-blue-500 hover:underline">View</a>
+                    <form th:action="@{/recipes/delete/{id}(id=${recipe.id})}" method="get" th:object="${recipe}" class="inline">
+                        <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                    </form>
+                    <button class="text-yellow-500 hover:underline" onclick="editRecipe(this)">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="editForm" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md hidden">
+        <h2 class="text-2xl font-bold text-center mb-6">Edit Recipe</h2>
+        <form th:action="@{/recipes/update}" method="post" th:object="${editRecipe}" class="space-y-4">
+            <input type="hidden" id="editRecipeId" th:field="*{id}"/>
+            <div>
+                <label for="editDoctor" class="block text-sm font-medium text-gray-700">Doctor:</label>
+                <select id="editDoctor" th:field="*{idDoctor.id}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName}"></option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Update Recipe</button>
+        </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center mb-6">Add New Recipe</h2>
+        <form th:action="@{/recipes/add}" method="post" th:object="${newRecipe}" class="space-y-4">
+            <div>
+                <label for="doctor" class="block text-sm font-medium text-gray-700">Doctor:</label>
+                <select id="doctor" th:field="*{idDoctor.id}" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName}"></option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add Recipe</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function editRecipe(button) {
+        const row = button.closest('tr');
+        const recipeId = row.getAttribute('data-id');
+        const doctor = row.children[1].innerText;
+
+        document.getElementById('editRecipeId').value = recipeId;
+        document.getElementById('editDoctor').value = doctor;
+
+        document.getElementById('editForm').classList.remove('hidden');
+    }
+</script>
+</body>
+</html>
